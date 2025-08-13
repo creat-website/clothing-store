@@ -1,0 +1,38 @@
+<% layout('layout') -%>
+<section class="hero">
+	<h1>Welcome to Greenfield School</h1>
+	<p>Inspiring excellence in every student.</p>
+</section>
+
+<section>
+	<h2>Latest News</h2>
+	<div class="cards">
+		<% if (news && news.length) { %>
+			<% news.forEach(item => { %>
+				<article class="card">
+					<h3><%= item.title %></h3>
+					<p class="muted"><%= formatDate(item.published_at) %></p>
+					<p><%= item.content %></p>
+				</article>
+			<% }) %>
+		<% } else { %>
+			<p>No news yet.</p>
+		<% } %>
+	</div>
+</section>
+
+<section>
+	<h2>Upcoming Events</h2>
+	<ul class="list">
+		<% if (events && events.length) { %>
+			<% events.forEach(ev => { %>
+				<li>
+					<strong><%= ev.title %></strong> — <%= formatDate(ev.event_date) %>
+					<div class="muted"><%= ev.description %></div>
+				</li>
+			<% }) %>
+		<% } else { %>
+			<li>No events scheduled.</li>
+		<% } %>
+	</ul>
+</section>

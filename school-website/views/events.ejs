@@ -1,0 +1,14 @@
+<% layout('layout') -%>
+<h1>Events</h1>
+<ul class="list">
+	<% if (events && events.length) { %>
+		<% events.forEach(ev => { %>
+			<li>
+				<strong><%= ev.title %></strong> — <%= formatDate(ev.event_date) %>
+				<div class="muted"><%= ev.description %></div>
+			</li>
+		<% }) %>
+	<% } else { %>
+		<li>No events scheduled.</li>
+	<% } %>
+</ul>

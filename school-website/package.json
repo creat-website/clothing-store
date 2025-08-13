@@ -1,0 +1,21 @@
+{
+  "name": "school-website",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
+    "seed": "node scripts/seed.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
+    "ejs-mate": "^4.0.0",
+    "express": "^4.19.2",
+    "express-basic-auth": "^1.2.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
