@@ -1,102 +1,89 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-dvh bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-950 dark:to-zinc-900 text-zinc-900 dark:text-zinc-100">
+      <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-white/60 bg-white/80 dark:bg-zinc-900/70 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="mx-auto max-w-5xl px-6 py-3 flex items-center justify-between">
+          <a href="#home" className="font-semibold tracking-tight">Rishab Jangir</a>
+          <nav className="hidden sm:flex gap-6 text-sm">
+            <a href="#about" className="hover:opacity-80">About</a>
+            <a href="#skills" className="hover:opacity-80">Skills</a>
+            <a href="#projects" className="hover:opacity-80">Projects</a>
+            <a href="#contact" className="hover:opacity-80">Contact</a>
+          </nav>
         </div>
+      </header>
+
+      <main id="home" className="mx-auto max-w-5xl px-6">
+        <section className="pt-16 sm:pt-24 pb-16">
+          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight">Hi, I'm Rishab Jangir</h1>
+          <p className="mt-4 text-zinc-600 dark:text-zinc-300 max-w-2xl">
+            I'm a 12th-grade student learning web development. I love building simple, fast, and
+            responsive websites using modern tools.
+          </p>
+          <div className="mt-6 flex gap-3">
+            <a href="#projects" className="inline-flex items-center rounded-md bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-4 py-2 text-sm font-medium hover:opacity-90">View Projects</a>
+            <a href="#contact" className="inline-flex items-center rounded-md border border-zinc-300 dark:border-zinc-700 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800">Contact</a>
+          </div>
+        </section>
+
+        <section id="about" className="py-12 border-t border-zinc-200 dark:border-zinc-800">
+          <h2 className="text-xl sm:text-2xl font-semibold">About</h2>
+          <p className="mt-3 text-zinc-600 dark:text-zinc-300 max-w-3xl">
+            I'm exploring frontend development with HTML, CSS, JavaScript, and React/Next.js. I enjoy
+            turning ideas into real projects and improving by building.
+          </p>
+        </section>
+
+        <section id="skills" className="py-12 border-t border-zinc-200 dark:border-zinc-800">
+          <h2 className="text-xl sm:text-2xl font-semibold">Skills</h2>
+          <ul className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            <li className="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm">HTML</li>
+            <li className="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm">CSS</li>
+            <li className="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm">JavaScript</li>
+            <li className="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm">React</li>
+            <li className="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm">Next.js</li>
+            <li className="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm">Git & GitHub</li>
+            <li className="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm">Responsive Design</li>
+            <li className="rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm">Tailwind CSS</li>
+          </ul>
+        </section>
+
+        <section id="projects" className="py-12 border-t border-zinc-200 dark:border-zinc-800">
+          <h2 className="text-xl sm:text-2xl font-semibold">Projects</h2>
+          <div className="mt-4 grid sm:grid-cols-2 gap-6">
+            <article className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4">
+              <h3 className="font-medium">Sample Portfolio</h3>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">A simple responsive portfolio built with Next.js and Tailwind CSS.</p>
+              <div className="mt-3 flex gap-3 text-sm">
+                <a className="underline hover:opacity-80" href="#">Live</a>
+                <a className="underline hover:opacity-80" href="#">Code</a>
+              </div>
+            </article>
+            <article className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4">
+              <h3 className="font-medium">Landing Page UI</h3>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">A clean landing page layout focusing on typography and spacing.</p>
+              <div className="mt-3 flex gap-3 text-sm">
+                <a className="underline hover:opacity-80" href="#">Live</a>
+                <a className="underline hover:opacity-80" href="#">Code</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="contact" className="py-12 border-t border-zinc-200 dark:border-zinc-800">
+          <h2 className="text-xl sm:text-2xl font-semibold">Contact</h2>
+          <p className="mt-3 text-zinc-600 dark:text-zinc-300">Feel free to reach out:</p>
+          <ul className="mt-3 text-sm">
+            <li>Email: <a className="underline" href="mailto:rishab@example.com">rishab@example.com</a></li>
+            <li>GitHub: <a className="underline" href="https://github.com/">github.com/your-username</a></li>
+          </ul>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="border-t border-zinc-200 dark:border-zinc-800">
+        <div className="mx-auto max-w-5xl px-6 py-6 text-sm text-zinc-500">
+          © {new Date().getFullYear()} Rishab Jangir. All rights reserved.
+        </div>
       </footer>
     </div>
   );
