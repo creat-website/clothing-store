@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Government Senior Secondary School — Official Website",
+  title: "Goverment Senior Secondary School Gadli-Thothi — Official Website",
   description: "Sarkari School information portal: notices, admissions, academics, facilities, and contact details.",
 };
 
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
