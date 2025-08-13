@@ -1,0 +1,15 @@
+<% layout('layout') -%>
+<h1>Manage Events</h1>
+<p><a class="button" href="/admin/events/create">+ Create Event</a></p>
+<ul class="list">
+	<% if (events && events.length) { %>
+		<% events.forEach(ev => { %>
+			<li>
+				<strong><%= ev.title %></strong> — <%= formatDate(ev.event_date) %>
+				<div class="muted"><%= ev.description %></div>
+			</li>
+		<% }) %>
+	<% } else { %>
+		<li>No events yet.</li>
+	<% } %>
+</ul>

@@ -1,0 +1,16 @@
+<% layout('layout') -%>
+<h1>Manage News</h1>
+<p><a class="button" href="/admin/news/create">+ Create News</a></p>
+<div class="cards">
+	<% if (news && news.length) { %>
+		<% news.forEach(item => { %>
+			<article class="card">
+				<h3><%= item.title %></h3>
+				<p class="muted"><%= formatDate(item.published_at) %></p>
+				<p><%= item.content %></p>
+			</article>
+		<% }) %>
+	<% } else { %>
+		<p>No news yet.</p>
+	<% } %>
+</div>

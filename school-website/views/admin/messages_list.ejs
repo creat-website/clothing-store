@@ -1,0 +1,15 @@
+<% layout('layout') -%>
+<h1>Contact Messages</h1>
+<ul class="list">
+	<% if (messages && messages.length) { %>
+		<% messages.forEach(msg => { %>
+			<li>
+				<strong><%= msg.name %></strong> (<%= msg.email %>) — <%= formatDate(msg.created_at) %>
+				<div><em><%= msg.subject || 'No subject' %></em></div>
+				<div><%= msg.message %></div>
+			</li>
+		<% }) %>
+	<% } else { %>
+		<li>No messages yet.</li>
+	<% } %>
+</ul>
