@@ -1,34 +1,31 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./styles/globals.css";
+import type { Metadata } from 'next'
+import { Noto_Sans_Devanagari } from 'next/font/google'
+import './globals.css'
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const notoSansDevanagari = Noto_Sans_Devanagari({
+  subsets: ['devanagari', 'latin'],
+  weight: ['300', '400', '600', '700'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
-  title: "Goverment Senior Secondary School Gadli-Thothi — Official Website",
-  description: "Sarkari School information portal: notices, admissions, academics, facilities, and contact details.",
-};
+  title: 'राजकीय उच्च माध्यमिक विद्यालय गडली ठोठी - Government Higher Secondary School Gadli Thothi',
+  description: 'गुणवत्तापूर्ण शिक्षा का केंद्र - हमारा विद्यालय बच्चों के समग्र विकास के लिए प्रतिबद्ध है',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="hi">
+      <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+      </head>
+      <body className={notoSansDevanagari.className}>
         {children}
       </body>
     </html>
-  );
+  )
 }
