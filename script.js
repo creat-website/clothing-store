@@ -497,3 +497,302 @@ style.textContent = `
 `;
 
 document.head.appendChild(style);
+
+// Login and Signup Form Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Login Form Handling
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Clear previous errors
+            clearAuthErrors();
+            
+            let isValid = true;
+            
+            // Email validation
+            if (!email) {
+                showAuthError('loginEmailError', 'ईमेल आवश्यक है।');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showAuthError('loginEmailError', 'कृपया सही ईमेल पता दर्ज करें।');
+                isValid = false;
+            }
+            
+            // Password validation
+            if (!password) {
+                showAuthError('loginPasswordError', 'पासवर्ड आवश्यक है।');
+                isValid = false;
+            } else if (password.length < 6) {
+                showAuthError('loginPasswordError', 'पासवर्ड कम से कम 6 अक्षर का होना चाहिए।');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Simulate login process
+                showAuthSuccess('सफलतापूर्वक लॉगिन हो गए!');
+                
+                // Store login info if remember me is checked
+                if (rememberMe) {
+                    localStorage.setItem('rememberedEmail', email);
+                }
+                
+                setTimeout(() => {
+                    alert(`स्वागत है! आप सफलतापूर्वक लॉगिन हो गए हैं।`);
+                    loginForm.reset();
+                    hideAuthSuccess();
+                    
+                    // Redirect to home section
+                    document.querySelector('#home').scrollIntoView({ behavior: 'smooth' });
+                }, 1500);
+            }
+        });
+        
+        // Load remembered email
+        const rememberedEmail = localStorage.getItem('rememberedEmail');
+        if (rememberedEmail) {
+            document.getElementById('loginEmail').value = rememberedEmail;
+            document.getElementById('rememberMe').checked = true;
+        }
+    }
+    
+    // Signup Form Handling
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const phone = document.getElementById('signupPhone').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const userType = document.getElementById('userType').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            
+            // Clear previous errors
+            clearAuthErrors();
+            
+            let isValid = true;
+            
+            // Name validation
+            if (!name.trim()) {
+                showAuthError('signupNameError', 'नाम आवश्यक है।');
+                isValid = false;
+            } else if (name.trim().length < 2) {
+                showAuthError('signupNameError', 'नाम कम से कम 2 अक्षर का होना चाहिए।');
+                isValid = false;
+            }
+            
+            // Email validation
+            if (!email) {
+                showAuthError('signupEmailError', 'ईमेल आवश्यक है।');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showAuthError('signupEmailError', 'कृपया सही ईमेल पता दर्ज करें।');
+                isValid = false;
+            }
+            
+            // Phone validation
+            if (!phone) {
+                showAuthError('signupPhoneError', 'मोबाइल नंबर आवश्यक है।');
+                isValid = false;
+            } else if (!isValidPhone(phone)) {
+                showAuthError('signupPhoneError', 'कृपया सही मोबाइल नंबर दर्ज करें (10 अंक)।');
+                isValid = false;
+            }
+            
+            // Password validation
+            if (!password) {
+                showAuthError('signupPasswordError', 'पासवर्ड आवश्यक है।');
+                isValid = false;
+            } else if (password.length < 6) {
+                showAuthError('signupPasswordError', 'पासवर्ड कम से कम 6 अक्षर का होना चाहिए।');
+                isValid = false;
+            } else if (!isStrongPassword(password)) {
+                showAuthError('signupPasswordError', 'पासवर्ड में कम से कम एक अक्षर और एक संख्या होनी चाहिए।');
+                isValid = false;
+            }
+            
+            // Confirm password validation
+            if (!confirmPassword) {
+                showAuthError('confirmPasswordError', 'पासवर्ड की पुष्टि आवश्यक है।');
+                isValid = false;
+            } else if (password !== confirmPassword) {
+                showAuthError('confirmPasswordError', 'पासवर्ड मेल नहीं खाते।');
+                isValid = false;
+            }
+            
+            // User type validation
+            if (!userType) {
+                showAuthError('userTypeError', 'उपयोगकर्ता प्रकार चुनें।');
+                isValid = false;
+            }
+            
+            // Terms agreement validation
+            if (!agreeTerms) {
+                alert('कृपया नियम और शर्तों से सहमत हों।');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Simulate signup process
+                showAuthSuccess('खाता सफलतापूर्वक बनाया गया!');
+                
+                setTimeout(() => {
+                    alert(`धन्यवाद ${name}! आपका खाता सफलतापूर्वक बन गया है।\n\nउपयोगकर्ता प्रकार: ${getUserTypeText(userType)}\nईमेल: ${email}\nमोबाइल: ${phone}\n\nकृपया लॉगिन करें।`);
+                    signupForm.reset();
+                    hideAuthSuccess();
+                    
+                    // Switch to login form
+                    document.querySelector('#login').scrollIntoView({ behavior: 'smooth' });
+                }, 1500);
+            }
+        });
+    }
+    
+    // Switch between login and signup forms
+    const switchAuthLinks = document.querySelectorAll('.switch-auth');
+    switchAuthLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+    
+    // Real-time validation for auth forms
+    const authInputs = document.querySelectorAll('.auth-form input, .auth-form select');
+    authInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateAuthField(this);
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.closest('.form-group').classList.contains('error')) {
+                validateAuthField(this);
+            }
+        });
+    });
+});
+
+// Authentication helper functions
+function showAuthError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    const formGroup = errorElement.closest('.form-group');
+    
+    errorElement.textContent = message;
+    formGroup.classList.add('error');
+}
+
+function clearAuthErrors() {
+    const errorMessages = document.querySelectorAll('.auth-form .error-message');
+    const formGroups = document.querySelectorAll('.auth-form .form-group');
+    
+    errorMessages.forEach(error => error.textContent = '');
+    formGroups.forEach(group => group.classList.remove('error'));
+}
+
+function showAuthSuccess(message) {
+    let successDiv = document.querySelector('.auth-success');
+    if (!successDiv) {
+        successDiv = document.createElement('div');
+        successDiv.className = 'auth-success';
+        
+        // Insert into both login and signup forms
+        const loginCard = document.querySelector('#login .auth-card');
+        const signupCard = document.querySelector('#signup .auth-card');
+        
+        if (loginCard) {
+            const loginSuccess = successDiv.cloneNode(true);
+            loginSuccess.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            loginCard.insertBefore(loginSuccess, loginCard.querySelector('.auth-form'));
+        }
+        
+        if (signupCard) {
+            const signupSuccess = successDiv.cloneNode(true);
+            signupSuccess.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            signupCard.insertBefore(signupSuccess, signupCard.querySelector('.auth-form'));
+        }
+    }
+    
+    const successDivs = document.querySelectorAll('.auth-success');
+    successDivs.forEach(div => {
+        div.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        div.classList.add('show');
+    });
+}
+
+function hideAuthSuccess() {
+    const successDivs = document.querySelectorAll('.auth-success');
+    successDivs.forEach(div => div.classList.remove('show'));
+}
+
+function isValidEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+}
+
+function isValidPhone(phone) {
+    const phonePattern = /^[6-9]\d{9}$/;
+    return phonePattern.test(phone);
+}
+
+function isStrongPassword(password) {
+    // At least one letter and one number
+    const strongPattern = /^(?=.*[A-Za-z])(?=.*\d).+$/;
+    return strongPattern.test(password);
+}
+
+function getUserTypeText(userType) {
+    const types = {
+        'student': 'छात्र',
+        'parent': 'अभिभावक',
+        'teacher': 'शिक्षक'
+    };
+    return types[userType] || userType;
+}
+
+function validateAuthField(field) {
+    const formGroup = field.closest('.form-group');
+    const errorElement = formGroup.querySelector('.error-message');
+    let isValid = true;
+    let message = '';
+    
+    // Clear previous error
+    formGroup.classList.remove('error');
+    errorElement.textContent = '';
+    
+    // Validation based on field type and name
+    if (field.hasAttribute('required') && !field.value.trim()) {
+        isValid = false;
+        message = 'यह फील्ड आवश्यक है।';
+    } else if (field.type === 'email' && field.value && !isValidEmail(field.value)) {
+        isValid = false;
+        message = 'कृपया सही ईमेल पता दर्ज करें।';
+    } else if (field.type === 'tel' && field.value && !isValidPhone(field.value)) {
+        isValid = false;
+        message = 'कृपया सही मोबाइल नंबर दर्ज करें (10 अंक)।';
+    } else if (field.type === 'password' && field.value && field.value.length < 6) {
+        isValid = false;
+        message = 'पासवर्ड कम से कम 6 अक्षर का होना चाहिए।';
+    } else if (field.id === 'confirmPassword' && field.value) {
+        const password = document.getElementById('signupPassword').value;
+        if (field.value !== password) {
+            isValid = false;
+            message = 'पासवर्ड मेल नहीं खाते।';
+        }
+    }
+    
+    if (!isValid) {
+        formGroup.classList.add('error');
+        errorElement.textContent = message;
+    }
+    
+    return isValid;
+}
