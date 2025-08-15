@@ -4,8 +4,7 @@ import About from './components/About'
 import Academics from './components/Academics'
 import Faculty from './components/Faculty'
 import Contact from './components/Contact'
-import Login from './components/Login'
-import Signup from './components/Signup'
+import { LoginWithSupabase, SignupWithSupabase } from './components/AuthWithSupabase'
 import Footer from './components/Footer'
 
 export default function Home() {
@@ -17,8 +16,8 @@ export default function Home() {
       <Academics />
       <Faculty />
       <Contact />
-      <Login />
-      <Signup />
+      <LoginWithSupabase />
+      <SignupWithSupabase />
       <Footer />
     </main>
   )
