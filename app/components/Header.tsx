@@ -17,9 +17,10 @@ export default function Header() {
               <li><a href="#home">मुख्य पृष्ठ</a></li>
               <li><a href="#about">हमारे बारे में</a></li>
               <li><a href="#academics">शिक्षा</a></li>
-              <li><a href="#admissions">प्रवेश</a></li>
               <li><a href="#faculty">शिक्षक</a></li>
               <li><a href="#contact">संपर्क</a></li>
+              <li><a href="#login" className="login-btn">लॉगिन</a></li>
+              <li><a href="#signup" className="signup-btn">साइन अप</a></li>
             </ul>
           </nav>
           <div className="mobile-menu-btn">

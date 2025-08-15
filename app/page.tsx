@@ -2,9 +2,10 @@ import Header from './components/Header'
 import Hero from './components/Hero'
 import About from './components/About'
 import Academics from './components/Academics'
-import Admissions from './components/Admissions'
 import Faculty from './components/Faculty'
 import Contact from './components/Contact'
+import Login from './components/Login'
+import Signup from './components/Signup'
 import Footer from './components/Footer'
 
 export default function Home() {
@@ -14,9 +15,10 @@ export default function Home() {
       <Hero />
       <About />
       <Academics />
-      <Admissions />
       <Faculty />
       <Contact />
+      <Login />
+      <Signup />
       <Footer />
     </main>
   )
