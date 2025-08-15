@@ -62,7 +62,11 @@ export function LoginWithSupabase() {
       })
 
       if (error) {
-        setErrors({ general: 'लॉगिन में त्रुटि: ' + error.message })
+        if (error.message.includes('Email not confirmed')) {
+          setErrors({ general: 'कृपया पहले अपना ईमेल verify करें। आपके ईमेल पर एक verification link भेजा गया है।' })
+        } else {
+          setErrors({ general: 'लॉगिन में त्रुटि: ' + error.message })
+        }
       } else {
         alert(`स्वागत है! आप सफलतापूर्वक लॉगिन हो गए हैं।`)
         
@@ -140,6 +144,25 @@ export function LoginWithSupabase() {
               <div className="auth-links">
                 <a href="#signup" className="switch-auth">नया खाता बनाएं</a>
                 <a href="#" className="forgot-password">पासवर्ड भूल गए?</a>
+                <button 
+                  type="button" 
+                  className="resend-verification" 
+                  onClick={async () => {
+                    if (formData.email) {
+                      const { error } = await supabase.auth.resend({
+                        type: 'signup',
+                        email: formData.email
+                      })
+                      if (!error) {
+                        alert('Verification email भेजा गया है। कृपया अपना ईमेल चेक करें।')
+                      }
+                    } else {
+                      alert('कृपया पहले ईमेल दर्ज करें।')
+                    }
+                  }}
+                >
+                  Verification Email दोबारा भेजें
+                </button>
               </div>
             </form>
           </div>
@@ -285,7 +308,7 @@ export function SignupWithSupabase() {
         }
       }
 
-      alert(`धन्यवाद ${formData.name}! आपका खाता सफलतापूर्वक बन गया है।\n\nउपयोगकर्ता प्रकार: ${getUserTypeText(formData.userType)}\nईमेल: ${formData.email}\nमोबाइल: ${formData.phone}\n\nकृपया अपना ईमेल verify करें और फिर लॉगिन करें।`)
+      alert(`धन्यवाद ${formData.name}! आपका खाता सफलतापूर्वक बन गया है।\n\nउपयोगकर्ता प्रकार: ${getUserTypeText(formData.userType)}\nईमेल: ${formData.email}\nमोबाइल: ${formData.phone}\n\n⚠️ महत्वपूर्ण: कृपया अपना ईमेल (${formData.email}) चेक करें और verification link पर क्लिक करें। Email verify करने के बाद ही आप लॉगिन कर सकेंगे।`)
       
       setFormData({
         name: '',

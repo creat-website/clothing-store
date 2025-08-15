@@ -578,6 +578,72 @@ section {
     transform: translateY(0);
 }
 
+/* Auth Messages */
+.auth-message {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.auth-message.show {
+    opacity: 1;
+    transform: translateY(0);
+    display: block;
+}
+
+.auth-message.success {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+}
+
+.auth-message.error {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+}
+
+.auth-message.info {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+}
+
+.auth-message.warning {
+    background: linear-gradient(135deg, #FF9800, #F57C00);
+    color: white;
+}
+
+.auth-message i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+/* Auth Success Message (backward compatibility) */
+.auth-success {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+}
+
+.auth-success.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.auth-success i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
 /* Main Admission Form Styles */
 .main-admission-form {
     background: white;

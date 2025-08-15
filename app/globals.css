@@ -901,6 +901,24 @@ html {
     color: #667eea !important;
 }
 
+.resend-verification {
+    background: transparent;
+    border: 1px solid #667eea;
+    color: #667eea;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 5px;
+}
+
+.resend-verification:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-1px);
+}
+
 /* Navigation Login/Signup Button Styles */
 .nav .login-btn,
 .nav .signup-btn {

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Header -->
@@ -193,6 +194,7 @@
             <div class="auth-container">
                 <div class="auth-card">
                     <h2>लॉगिन करें</h2>
+                    <div id="loginMessage" class="auth-message"></div>
                     <form id="loginForm" class="auth-form">
                         <div class="form-group">
                             <label for="loginEmail">ईमेल आईडी</label>
@@ -208,10 +210,10 @@
                             <input type="checkbox" id="rememberMe" name="rememberMe">
                             <label for="rememberMe">मुझे याद रखें</label>
                         </div>
-                        <button type="submit" class="btn btn-primary auth-btn">लॉगिन करें</button>
+                        <button type="submit" class="btn btn-primary auth-btn" id="loginBtn">लॉगिन करें</button>
                         <div class="auth-links">
                             <a href="#signup" class="switch-auth">नया खाता बनाएं</a>
-                            <a href="#" class="forgot-password">पासवर्ड भूल गए?</a>
+                            <a href="#" id="resendVerification" style="display: none;">ईमेल वेरिफिकेशन दोबारा भेजें</a>
                         </div>
                     </form>
                 </div>
@@ -225,47 +227,54 @@
             <div class="auth-container">
                 <div class="auth-card">
                     <h2>नया खाता बनाएं</h2>
+                    <div id="signupMessage" class="auth-message"></div>
                     <form id="signupForm" class="auth-form">
-                        <div class="form-group">
-                            <label for="signupName">पूरा नाम</label>
-                            <input type="text" id="signupName" name="name" required>
-                            <span class="error-message" id="signupNameError"></span>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="signupName">पूरा नाम</label>
+                                <input type="text" id="signupName" name="name" required>
+                                <span class="error-message" id="signupNameError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="signupEmail">ईमेल आईडी</label>
+                                <input type="email" id="signupEmail" name="email" required>
+                                <span class="error-message" id="signupEmailError"></span>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="signupEmail">ईमेल आईडी</label>
-                            <input type="email" id="signupEmail" name="email" required>
-                            <span class="error-message" id="signupEmailError"></span>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="signupPhone">मोबाइल नंबर</label>
+                                <input type="tel" id="signupPhone" name="phone" required>
+                                <span class="error-message" id="signupPhoneError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="userType">उपयोगकर्ता प्रकार</label>
+                                <select id="userType" name="userType" required>
+                                    <option value="">चुनें</option>
+                                    <option value="student">छात्र</option>
+                                    <option value="parent">अभिभावक</option>
+                                    <option value="teacher">शिक्षक</option>
+                                </select>
+                                <span class="error-message" id="userTypeError"></span>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="signupPhone">मोबाइल नंबर</label>
-                            <input type="tel" id="signupPhone" name="phone" required>
-                            <span class="error-message" id="signupPhoneError"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="signupPassword">पासवर्ड</label>
-                            <input type="password" id="signupPassword" name="password" required>
-                            <span class="error-message" id="signupPasswordError"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">पासवर्ड की पुष्टि करें</label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" required>
-                            <span class="error-message" id="confirmPasswordError"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="userType">उपयोगकर्ता प्रकार</label>
-                            <select id="userType" name="userType" required>
-                                <option value="">चुनें</option>
-                                <option value="student">छात्र</option>
-                                <option value="parent">अभिभावक</option>
-                                <option value="teacher">शिक्षक</option>
-                            </select>
-                            <span class="error-message" id="userTypeError"></span>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="signupPassword">पासवर्ड</label>
+                                <input type="password" id="signupPassword" name="password" required>
+                                <span class="error-message" id="signupPasswordError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">पासवर्ड की पुष्टि करें</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                                <span class="error-message" id="confirmPasswordError"></span>
+                            </div>
                         </div>
                         <div class="form-group checkbox-group">
                             <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
                             <label for="agreeTerms">मैं नियम और शर्तों से सहमत हूं</label>
                         </div>
-                        <button type="submit" class="btn btn-primary auth-btn">खाता बनाएं</button>
+                        <button type="submit" class="btn btn-primary auth-btn" id="signupBtn">खाता बनाएं</button>
                         <div class="auth-links">
                             <a href="#login" class="switch-auth">पहले से खाता है? लॉगिन करें</a>
                         </div>

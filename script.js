@@ -498,20 +498,30 @@ style.textContent = `
 
 document.head.appendChild(style);
 
-// Login and Signup Form Functionality
+// Supabase Configuration
+const supabaseUrl = 'https://qnfifsaavgsyutxaoymd.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuZmlmc2FhdmdzeXV0eGFveW1kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUyNjY3NTMsImV4cCI6MjA3MDg0Mjc1M30.Tco7Pbbz3iRNNKG3WmPbc65P-Ze95U20ttem8ADhejA';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+// Login and Signup Form Functionality with Supabase
 document.addEventListener('DOMContentLoaded', function() {
+    // Check for existing session on page load
+    checkAuthSession();
+    
     // Login Form Handling
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             const rememberMe = document.getElementById('rememberMe').checked;
+            const loginBtn = document.getElementById('loginBtn');
             
-            // Clear previous errors
+            // Clear previous errors and messages
             clearAuthErrors();
+            hideAuthMessage('loginMessage');
             
             let isValid = true;
             
@@ -534,22 +544,64 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (isValid) {
-                // Simulate login process
-                showAuthSuccess('सफलतापूर्वक लॉगिन हो गए!');
+                // Show loading state
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'लॉगिन हो रहा है...';
                 
-                // Store login info if remember me is checked
-                if (rememberMe) {
-                    localStorage.setItem('rememberedEmail', email);
-                }
-                
-                setTimeout(() => {
-                    alert(`स्वागत है! आप सफलतापूर्वक लॉगिन हो गए हैं।`);
-                    loginForm.reset();
-                    hideAuthSuccess();
+                try {
+                    // Attempt to sign in with Supabase
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
                     
-                    // Redirect to home section
-                    document.querySelector('#home').scrollIntoView({ behavior: 'smooth' });
-                }, 1500);
+                    if (error) {
+                        if (error.message.includes('Email not confirmed')) {
+                            showAuthMessage('loginMessage', 'error', 
+                                '<i class="fas fa-exclamation-triangle"></i> आपका ईमेल पता अभी तक verify नहीं हुआ है। कृपया अपने ईमेल में भेजा गया verification link click करें।');
+                            document.getElementById('resendVerification').style.display = 'inline';
+                            document.getElementById('resendVerification').onclick = () => resendEmailVerification(email);
+                        } else if (error.message.includes('Invalid login credentials')) {
+                            showAuthMessage('loginMessage', 'error', 
+                                '<i class="fas fa-times-circle"></i> गलत ईमेल या पासवर्ड। कृपया दोबारा कोशिश करें।');
+                        } else {
+                            showAuthMessage('loginMessage', 'error', 
+                                `<i class="fas fa-times-circle"></i> लॉगिन में समस्या: ${error.message}`);
+                        }
+                    } else {
+                        // Check if email is confirmed
+                        if (data.user && !data.user.email_confirmed_at) {
+                            showAuthMessage('loginMessage', 'warning', 
+                                '<i class="fas fa-exclamation-triangle"></i> कृपया पहले अपना ईमेल verify करें। आपके ईमेल में verification link भेजा गया है।');
+                            document.getElementById('resendVerification').style.display = 'inline';
+                            document.getElementById('resendVerification').onclick = () => resendEmailVerification(email);
+                        } else {
+                            // Store user data in users table
+                            await storeUserData(data.user, 'login');
+                            
+                            showAuthMessage('loginMessage', 'success', 
+                                '<i class="fas fa-check-circle"></i> सफलतापूर्वक लॉगिन हो गए!');
+                            
+                            // Store login info if remember me is checked
+                            if (rememberMe) {
+                                localStorage.setItem('rememberedEmail', email);
+                            }
+                            
+                            setTimeout(() => {
+                                loginForm.reset();
+                                hideAuthMessage('loginMessage');
+                                document.querySelector('#home').scrollIntoView({ behavior: 'smooth' });
+                            }, 2000);
+                        }
+                    }
+                } catch (err) {
+                    showAuthMessage('loginMessage', 'error', 
+                        `<i class="fas fa-times-circle"></i> लॉगिन में तकनीकी समस्या: ${err.message}`);
+                } finally {
+                    // Reset button state
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'लॉगिन करें';
+                }
             }
         });
         
@@ -564,7 +616,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Signup Form Handling
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
-        signupForm.addEventListener('submit', function(e) {
+        signupForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const name = document.getElementById('signupName').value;
@@ -574,9 +626,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const confirmPassword = document.getElementById('confirmPassword').value;
             const userType = document.getElementById('userType').value;
             const agreeTerms = document.getElementById('agreeTerms').checked;
+            const signupBtn = document.getElementById('signupBtn');
             
-            // Clear previous errors
+            // Clear previous errors and messages
             clearAuthErrors();
+            hideAuthMessage('signupMessage');
             
             let isValid = true;
             
@@ -636,22 +690,59 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Terms agreement validation
             if (!agreeTerms) {
-                alert('कृपया नियम और शर्तों से सहमत हों।');
+                showAuthMessage('signupMessage', 'error', 
+                    '<i class="fas fa-exclamation-triangle"></i> कृपया नियम और शर्तों से सहमत हों।');
                 isValid = false;
             }
             
             if (isValid) {
-                // Simulate signup process
-                showAuthSuccess('खाता सफलतापूर्वक बनाया गया!');
+                // Show loading state
+                signupBtn.disabled = true;
+                signupBtn.textContent = 'खाता बनाया जा रहा है...';
                 
-                setTimeout(() => {
-                    alert(`धन्यवाद ${name}! आपका खाता सफलतापूर्वक बन गया है।\n\nउपयोगकर्ता प्रकार: ${getUserTypeText(userType)}\nईमेल: ${email}\nमोबाइल: ${phone}\n\nकृपया लॉगिन करें।`);
-                    signupForm.reset();
-                    hideAuthSuccess();
+                try {
+                    // Sign up with Supabase
+                    const { data, error } = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            data: {
+                                full_name: name,
+                                phone: phone,
+                                user_type: userType
+                            }
+                        }
+                    });
                     
-                    // Switch to login form
-                    document.querySelector('#login').scrollIntoView({ behavior: 'smooth' });
-                }, 1500);
+                    if (error) {
+                        if (error.message.includes('User already registered')) {
+                            showAuthMessage('signupMessage', 'error', 
+                                '<i class="fas fa-exclamation-triangle"></i> यह ईमेल पहले से registered है। कृपया लॉगिन करें।');
+                        } else {
+                            showAuthMessage('signupMessage', 'error', 
+                                `<i class="fas fa-times-circle"></i> खाता बनाने में समस्या: ${error.message}`);
+                        }
+                    } else {
+                        // Store additional user data in users table
+                        await storeUserData(data.user, 'signup', { name, phone, userType });
+                        
+                        showAuthMessage('signupMessage', 'success', 
+                            '<i class="fas fa-check-circle"></i> खाता सफलतापूर्वक बनाया गया! कृपया अपने ईमेल में भेजा गया verification link click करें।');
+                        
+                        setTimeout(() => {
+                            signupForm.reset();
+                            hideAuthMessage('signupMessage');
+                            document.querySelector('#login').scrollIntoView({ behavior: 'smooth' });
+                        }, 3000);
+                    }
+                } catch (err) {
+                    showAuthMessage('signupMessage', 'error', 
+                        `<i class="fas fa-times-circle"></i> खाता बनाने में तकनीकी समस्या: ${err.message}`);
+                } finally {
+                    // Reset button state
+                    signupBtn.disabled = false;
+                    signupBtn.textContent = 'खाता बनाएं';
+                }
             }
         });
     }
@@ -682,6 +773,100 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Authentication helper functions
+function showAuthMessage(elementId, type, message) {
+    const messageElement = document.getElementById(elementId);
+    if (messageElement) {
+        messageElement.className = `auth-message ${type} show`;
+        messageElement.innerHTML = message;
+    }
+}
+
+function hideAuthMessage(elementId) {
+    const messageElement = document.getElementById(elementId);
+    if (messageElement) {
+        messageElement.classList.remove('show');
+        setTimeout(() => {
+            messageElement.className = 'auth-message';
+            messageElement.innerHTML = '';
+        }, 300);
+    }
+}
+
+// Email verification functions
+async function resendEmailVerification(email) {
+    try {
+        const { error } = await supabase.auth.resend({
+            type: 'signup',
+            email: email
+        });
+        
+        if (error) {
+            showAuthMessage('loginMessage', 'error', 
+                `<i class="fas fa-times-circle"></i> वेरिफिकेशन ईमेल भेजने में समस्या: ${error.message}`);
+        } else {
+            showAuthMessage('loginMessage', 'success', 
+                '<i class="fas fa-check-circle"></i> वेरिफिकेशन ईमेल दोबारा भेज दिया गया है। कृपया अपना ईमेल चेक करें।');
+            document.getElementById('resendVerification').style.display = 'none';
+        }
+    } catch (err) {
+        showAuthMessage('loginMessage', 'error', 
+            `<i class="fas fa-times-circle"></i> तकनीकी समस्या: ${err.message}`);
+    }
+}
+
+// Check authentication session
+async function checkAuthSession() {
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && session.user) {
+            // User is logged in, you can update UI accordingly
+            console.log('User is logged in:', session.user.email);
+        }
+    } catch (error) {
+        console.error('Session check error:', error);
+    }
+}
+
+// Store user data in users table
+async function storeUserData(user, action, additionalData = {}) {
+    try {
+        if (action === 'signup') {
+            // Insert new user data
+            const { error } = await supabase
+                .from('users')
+                .insert([{
+                    id: user.id,
+                    email: user.email,
+                    full_name: additionalData.name || user.user_metadata?.full_name,
+                    phone: additionalData.phone || user.user_metadata?.phone,
+                    user_type: additionalData.userType || user.user_metadata?.user_type || 'student',
+                    email_confirmed: user.email_confirmed_at ? true : false,
+                    created_at: new Date().toISOString()
+                }]);
+            
+            if (error && !error.message.includes('duplicate key')) {
+                console.error('Error storing user data:', error);
+            }
+        } else if (action === 'login') {
+            // Update last login time
+            const { error } = await supabase
+                .from('users')
+                .upsert([{
+                    id: user.id,
+                    email: user.email,
+                    email_confirmed: user.email_confirmed_at ? true : false,
+                    last_login: new Date().toISOString()
+                }]);
+            
+            if (error) {
+                console.error('Error updating user login:', error);
+            }
+        }
+    } catch (err) {
+        console.error('Store user data error:', err);
+    }
+}
+
 function showAuthError(elementId, message) {
     const errorElement = document.getElementById(elementId);
     const formGroup = errorElement.closest('.form-group');
