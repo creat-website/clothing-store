@@ -939,6 +939,74 @@ html {
     color: #ffd700;
 }
 
+/* Profile Avatar & Dropdown */
+.profile {
+    position: relative;
+}
+
+.avatar-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.avatar-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #ffd700;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.avatar-btn:hover .avatar-circle {
+    transform: translateY(-1px);
+}
+
+.profile-dropdown {
+    position: absolute;
+    right: 0;
+    top: 46px;
+    background: #fff;
+    color: #333;
+    border-radius: 10px;
+    min-width: 220px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    padding: 10px;
+    z-index: 1100;
+}
+
+.profile-email {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
+}
+
+.dropdown-item {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.dropdown-item:hover {
+    background: #f4f6f8;
+}
+
 /* Error Message Styles for Auth Forms */
 .auth-form .error-message {
     color: #e74c3c;
