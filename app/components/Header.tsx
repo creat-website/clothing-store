@@ -6,6 +6,7 @@ import { supabase } from '../../lib/supabase'
 export default function Header() {
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export default function Header() {
               <p>Government Higher Secondary School Gadli Thothi</p>
             </div>
           </div>
-          <nav className="nav">
+          <nav className={`nav ${mobileOpen ? 'active' : ''}`}>
             <ul>
               <li><a href="#home">मुख्य पृष्ठ</a></li>
               <li><a href="#about">हमारे बारे में</a></li>
@@ -86,8 +87,14 @@ export default function Header() {
               )}
             </ul>
           </nav>
-          <div className="mobile-menu-btn">
-            <i className="fas fa-bars"></i>
+          <div
+            className="mobile-menu-btn"
+            role="button"
+            aria-label="Open mobile menu"
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen((v) => !v)}
+          >
+            <i className={`fas ${mobileOpen ? 'fa-times' : 'fa-bars'}`}></i>
           </div>
         </div>
       </div>
