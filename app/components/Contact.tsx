@@ -10,7 +10,7 @@ export default function Contact() {
               <div>
                 <h3>पता</h3>
                 <p>राजकीय उच्च माध्यमिक विद्यालय गादली-ठोठी<br />
-                गडली ठोठी, हरियाणा - 125001</p>
+                गडली ठोठी, राजस्थान - 333033</p>
               </div>
             </div>
             <div className="contact-item">

@@ -107,7 +107,7 @@ export default function Admissions() {
                   </div>
                   <div className="form-group">
                     <label htmlFor="state">राज्य *</label>
-                    <input type="text" id="state" name="state" defaultValue="हरियाणा" required />
+                    <input type="text" id="state" name="state" defaultValue="राजस्थान" required />
                   </div>
                 </div>
               </div>
