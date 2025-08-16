@@ -494,6 +494,31 @@ style.textContent = `
         from { opacity: 0; }
         to { opacity: 1; }
     }
+
+    /* User menu (avatar + dropdown) */
+    .user-menu { position: relative; margin-left: 16px; }
+    .avatar-circle {
+        width: 36px; height: 36px; border-radius: 50%;
+        background: #ffd700; color: #1e3c72; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        border: 2px solid rgba(255,255,255,0.7);
+    }
+    .user-dropdown {
+        position: absolute; right: 0; top: 46px; min-width: 220px;
+        background: #fff; color: #1e293b; border-radius: 10px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        padding: 10px; display: none; z-index: 1002;
+    }
+    .user-dropdown.show { display: block; }
+    .user-email { font-size: 0.9rem; font-weight: 600; color: #0f172a; padding: 8px 10px; }
+    .user-actions { border-top: 1px solid #e2e8f0; margin-top: 6px; padding-top: 6px; }
+    .logout-btn {
+        width: 100%; background: #ef4444; color: white; border: none; border-radius: 8px;
+        padding: 8px 10px; font-weight: 600; cursor: pointer;
+    }
+    .logout-btn:hover { background: #dc2626; }
+    @media (max-width: 768px) { .user-dropdown { right: -20px; } }
 `;
 
 document.head.appendChild(style);
@@ -507,6 +532,15 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 document.addEventListener('DOMContentLoaded', function() {
     // Check for existing session on page load
     checkAuthSession();
+    // Subscribe to auth state changes
+    try {
+        supabase.auth.onAuthStateChange(async (_event, session) => {
+            const user = session?.user || null;
+            updateAuthUI(user);
+        });
+    } catch (e) {
+        console.warn('Auth listener init failed:', e);
+    }
     
     // Login Form Handling
     const loginForm = document.getElementById('loginForm');
@@ -581,6 +615,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             showAuthMessage('loginMessage', 'success', 
                                 '<i class="fas fa-check-circle"></i> सफलतापूर्वक लॉगिन हो गए!');
+                            // Update header UI
+                            updateAuthUI(data.user);
                             
                             // Store login info if remember me is checked
                             if (rememberMe) {
@@ -821,9 +857,102 @@ async function checkAuthSession() {
         if (session && session.user) {
             // User is logged in, you can update UI accordingly
             console.log('User is logged in:', session.user.email);
+            updateAuthUI(session.user);
         }
     } catch (error) {
         console.error('Session check error:', error);
+    }
+}
+
+// Update header UI based on auth state
+function updateAuthUI(user) {
+    const headerContent = document.querySelector('.header-content');
+    const loginLink = document.querySelector('.nav .login-btn')?.closest('li');
+    const signupLink = document.querySelector('.nav .signup-btn')?.closest('li');
+
+    if (!headerContent) return;
+
+    if (user) {
+        // Hide login/signup
+        if (loginLink) loginLink.style.display = 'none';
+        if (signupLink) signupLink.style.display = 'none';
+        // Render user menu if not present
+        if (!document.querySelector('#userMenu')) {
+            renderUserMenu(user);
+        } else {
+            // Update email if changed
+            const emailEl = document.querySelector('#userMenu .user-email');
+            if (emailEl) emailEl.textContent = user.email || '';
+        }
+    } else {
+        // Show login/signup
+        if (loginLink) loginLink.style.display = '';
+        if (signupLink) signupLink.style.display = '';
+        removeUserMenu();
+    }
+}
+
+function renderUserMenu(user) {
+    const headerContent = document.querySelector('.header-content');
+    if (!headerContent) return;
+
+    const container = document.createElement('div');
+    container.id = 'userMenu';
+    container.className = 'user-menu';
+
+    const initials = (user.email || '?').trim().charAt(0).toUpperCase();
+
+    const avatar = document.createElement('div');
+    avatar.className = 'avatar-circle';
+    avatar.title = user.email || '';
+    avatar.textContent = initials;
+
+    const dropdown = document.createElement('div');
+    dropdown.className = 'user-dropdown';
+    dropdown.innerHTML = `
+        <div class="user-email"><i class="fas fa-user"></i> ${user.email || ''}</div>
+        <div class="user-actions">
+            <button class="logout-btn"><i class="fas fa-right-from-bracket"></i> लॉगआउट</button>
+        </div>
+    `;
+
+    container.appendChild(avatar);
+    container.appendChild(dropdown);
+    headerContent.appendChild(container);
+
+    // Toggle dropdown
+    avatar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+        if (!container.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    // Logout
+    const logoutBtn = dropdown.querySelector('.logout-btn');
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await supabase.auth.signOut();
+            updateAuthUI(null);
+            showAuthMessage('loginMessage', 'success', '<i class="fas fa-check-circle"></i> आप लॉगआउट हो गए।');
+            // Scroll to home
+            const home = document.querySelector('#home');
+            if (home) home.scrollIntoView({ behavior: 'smooth' });
+        } catch (err) {
+            alert('लॉगआउट में समस्या: ' + (err?.message || err));
+        }
+    });
+}
+
+function removeUserMenu() {
+    const existing = document.getElementById('userMenu');
+    if (existing && existing.parentNode) {
+        existing.parentNode.removeChild(existing);
     }
 }
 
