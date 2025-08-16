@@ -723,9 +723,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 `<i class="fas fa-times-circle"></i> खाता बनाने में समस्या: ${error.message}`);
                         }
                     } else {
-                        // Store additional user data in users table
-                        await storeUserData(data.user, 'signup', { name, phone, userType });
-                        
+                        // Do NOT insert into public.users here; RLS will block client-side inserts.
+                        // The database trigger public.handle_new_user() (see database/schema.sql)
+                        // already creates/updates a row in public.users from auth metadata on signup.
                         showAuthMessage('signupMessage', 'success', 
                             '<i class="fas fa-check-circle"></i> खाता सफलतापूर्वक बनाया गया! कृपया अपने ईमेल में भेजा गया verification link click करें।');
                         
