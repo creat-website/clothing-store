@@ -48,7 +48,7 @@ export default function Header() {
           <div className="logo">
             <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="भारत सरकार" className="emblem" />
             <div className="school-info">
-              <h1>राजकीय उच्च माध्यमिक विद्यालय गडली ठोठी</h1>
+              <h1>राजकीय उच्च माध्यमिक विद्यालय गादली-ठोठी</h1>
               <p>Government Higher Secondary School Gadli Thothi</p>
             </div>
           </div>

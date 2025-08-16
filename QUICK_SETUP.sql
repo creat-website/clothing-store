@@ -61,5 +61,5 @@ INSERT INTO users (email, full_name, phone, user_type) VALUES
 ('teacher@school.gov.in', 'श्रीमती सुनीता देवी', '9876543211', 'teacher');
 
 INSERT INTO announcements (title, content, announcement_type, target_audience) VALUES
-('स्वागत है', 'राजकीय उच्च माध्यमिक विद्यालय गडली ठोठी में आपका स्वागत है।', 'general', 'all'),
+('स्वागत है', 'राजकीय उच्च माध्यमिक विद्यालय गादली-ठोठी में आपका स्वागत है।', 'general', 'all'),
 ('नया शैक्षणिक सत्र', 'नया शैक्षणिक सत्र शुरू हो गया है। सभी छात्र समय पर आएं।', 'academic', 'students');

@@ -9,7 +9,7 @@ const notoSansDevanagari = Noto_Sans_Devanagari({
 })
 
 export const metadata: Metadata = {
-  title: 'राजकीय उच्च माध्यमिक विद्यालय गडली ठोठी - Government Higher Secondary School Gadli Thothi',
+  title: 'राजकीय उच्च माध्यमिक विद्यालय गादली-ठोठी - Government Higher Secondary School Gadli Thothi',
   description: 'गुणवत्तापूर्ण शिक्षा का केंद्र - हमारा विद्यालय बच्चों के समग्र विकास के लिए प्रतिबद्ध है',
 }
 

@@ -63,7 +63,7 @@ export function ContactWithSupabase() {
               <i className="fas fa-map-marker-alt"></i>
               <div>
                 <h3>पता</h3>
-                <p>राजकीय उच्च माध्यमिक विद्यालय गडली ठोठी<br />
+                <p>राजकीय उच्च माध्यमिक विद्यालय गादली-ठोठी<br />
                 गांव गडली ठोठी, तहसील सिरसा<br />
                 जिला सिरसा, हरियाणा - 125055</p>
               </div>

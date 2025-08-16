@@ -9,7 +9,7 @@ export default function Contact() {
               <i className="fas fa-map-marker-alt"></i>
               <div>
                 <h3>पता</h3>
-                <p>राजकीय उच्च माध्यमिक विद्यालय गडली ठोठी<br />
+                <p>राजकीय उच्च माध्यमिक विद्यालय गादली-ठोठी<br />
                 गडली ठोठी, हरियाणा - 125001</p>
               </div>
             </div>

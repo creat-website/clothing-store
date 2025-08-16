@@ -5,7 +5,7 @@ export default function About() {
         <h2 className="section-title">हमारे विद्यालय के बारे में</h2>
         <div className="about-content">
           <div className="about-text">
-            <p>हमारा राजकीय उच्च माध्यमिक विद्यालय गडली ठोठी 1985 से समुदाय की सेवा कर रहा है। हम गुणवत्तापूर्ण शिक्षा प्रदान करने और छात्रों के समग्र विकास के लिए प्रतिबद्ध हैं।</p>
+            <p>हमारा राजकीय उच्च माध्यमिक विद्यालय गादली-ठोठी 1985 से समुदाय की सेवा कर रहा है। हम गुणवत्तापूर्ण शिक्षा प्रदान करने और छात्रों के समग्र विकास के लिए प्रतिबद्ध हैं।</p>
             <div className="features">
               <div className="feature">
                 <i className="fas fa-graduation-cap"></i>

@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>राजकीय उच्च माध्यमिक विद्यालय गडली ठोठी</h3>
+            <h3>राजकीय उच्च माध्यमिक विद्यालय गादली-ठोठी</h3>
             <p>गुणवत्तापूर्ण शिक्षा के लिए प्रतिबद्ध</p>
           </div>
           <div className="footer-section">
@@ -23,7 +23,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2024 राजकीय उच्च माध्यमिक विद्यालय गडली ठोठी। सभी अधिकार सुरक्षित।</p>
+          <p>&copy; 2024 राजकीय उच्च माध्यमिक विद्यालय गादली-ठोठी। सभी अधिकार सुरक्षित।</p>
         </div>
       </div>
     </footer>
