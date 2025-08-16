@@ -4,7 +4,6 @@
 CREATE TABLE users (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     phone VARCHAR(15),
     user_type VARCHAR(20) CHECK (user_type IN ('student', 'parent', 'teacher', 'admin')) NOT NULL,
@@ -133,7 +132,7 @@ CREATE POLICY "Users can update own profile" ON users FOR UPDATE USING (auth.uid
 -- Students can view their own data, faculty and admin can view all
 CREATE POLICY "Students can view own data" ON students FOR SELECT USING (
     auth.uid() = user_id OR 
-    EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND user_type IN ('faculty', 'admin'))
+    EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND user_type IN ('teacher', 'admin'))
 );
 
 -- Faculty can view their own data and admin can view all
@@ -144,7 +143,7 @@ CREATE POLICY "Faculty can view own data" ON faculty FOR SELECT USING (
 
 -- Contact inquiries can be viewed by faculty and admin
 CREATE POLICY "Faculty and admin can view inquiries" ON contact_inquiries FOR SELECT USING (
-    EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND user_type IN ('faculty', 'admin'))
+    EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND user_type IN ('teacher', 'admin'))
 );
 
 -- Anyone can insert contact inquiries
@@ -171,3 +170,35 @@ CREATE TRIGGER update_students_updated_at BEFORE UPDATE ON students FOR EACH ROW
 CREATE TRIGGER update_faculty_updated_at BEFORE UPDATE ON faculty FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_contact_inquiries_updated_at BEFORE UPDATE ON contact_inquiries FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_announcements_updated_at BEFORE UPDATE ON announcements FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Automatically create a row in public.users when a new auth user signs up
+-- This uses the metadata provided during signUp from the client
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.users (id, email, full_name, phone, user_type)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+    COALESCE(NEW.raw_user_meta_data->>'phone', NULL),
+    COALESCE(NEW.raw_user_meta_data->>'user_type', 'student')
+  )
+  ON CONFLICT (id) DO UPDATE
+    SET email = EXCLUDED.email,
+        full_name = EXCLUDED.full_name,
+        phone = EXCLUDED.phone,
+        user_type = EXCLUDED.user_type,
+        updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Allow the auth role to execute the function
+REVOKE ALL ON FUNCTION public.handle_new_user FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.handle_new_user TO authenticated, anon;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();

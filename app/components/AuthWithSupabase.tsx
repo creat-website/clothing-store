@@ -184,6 +184,7 @@ export function SignupWithSupabase() {
   })
   const [errors, setErrors] = useState<{[key: string]: string}>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
 
   const validateEmail = (email: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -278,10 +279,17 @@ export function SignupWithSupabase() {
     setIsSubmitting(true)
 
     try {
-      // Sign up with Supabase Auth
+      // Sign up with Supabase Auth (send user metadata so DB trigger can create profile)
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          data: {
+            full_name: formData.name,
+            phone: formData.phone,
+            user_type: formData.userType,
+          }
+        }
       })
 
       if (authError) {
@@ -289,27 +297,11 @@ export function SignupWithSupabase() {
         return
       }
 
-      // Insert user data into users table
-      if (authData.user) {
-        const { error: dbError } = await supabase
-          .from('users')
-          .insert([
-            {
-              id: authData.user.id,
-              email: formData.email,
-              full_name: formData.name,
-              phone: formData.phone,
-              user_type: formData.userType,
-            }
-          ])
+      // Profile row will be created by a DB trigger on auth.users using the metadata above
 
-        if (dbError) {
-          console.error('Database error:', dbError)
-        }
-      }
+      // Show inline success message immediately
+      setSuccessMessage(`धन्यवाद ${formData.name}! आपका खाता सफलतापूर्वक बन गया है। \nउपयोगकर्ता प्रकार: ${getUserTypeText(formData.userType)} \nईमेल: ${formData.email} \nमोबाइल: ${formData.phone} \n\nकृपया अपने ईमेल में भेजा गया verification link क्लिक करें, उसके बाद आप लॉगिन कर सकेंगे।`)
 
-      alert(`धन्यवाद ${formData.name}! आपका खाता सफलतापूर्वक बन गया है।\n\nउपयोगकर्ता प्रकार: ${getUserTypeText(formData.userType)}\nईमेल: ${formData.email}\nमोबाइल: ${formData.phone}\n\n⚠️ महत्वपूर्ण: कृपया अपना ईमेल (${formData.email}) चेक करें और verification link पर क्लिक करें। Email verify करने के बाद ही आप लॉगिन कर सकेंगे।`)
-      
       setFormData({
         name: '',
         email: '',
@@ -320,7 +312,10 @@ export function SignupWithSupabase() {
         agreeTerms: false
       })
       
-      document.querySelector('#login')?.scrollIntoView({ behavior: 'smooth' })
+      // Smoothly navigate to login after a short delay
+      setTimeout(() => {
+        document.querySelector('#login')?.scrollIntoView({ behavior: 'smooth' })
+      }, 2000)
     } catch (error) {
       setErrors({ general: 'साइन अप में त्रुटि हुई।' })
     } finally {
@@ -334,6 +329,11 @@ export function SignupWithSupabase() {
         <div className="auth-container">
           <div className="auth-card">
             <h2>नया खाता बनाएं</h2>
+            {successMessage && (
+              <div className="success-message" style={{whiteSpace: 'pre-line', textAlign: 'center', marginBottom: '20px'}}>
+                {successMessage}
+              </div>
+            )}
             {errors.general && (
               <div className="error-message" style={{textAlign: 'center', marginBottom: '20px'}}>
                 {errors.general}
